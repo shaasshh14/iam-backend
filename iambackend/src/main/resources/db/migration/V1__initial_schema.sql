@@ -21,8 +21,6 @@ CREATE TABLE users (
     employee_id VARCHAR(50) UNIQUE,
     department VARCHAR(100),
 
-    role VARCHAR(100),
-
     status VARCHAR(20) NOT NULL DEFAULT 'ACTIVE',
 
     last_active TIMESTAMP,
@@ -34,7 +32,7 @@ CREATE TABLE users (
     updated_at TIMESTAMP NOT NULL,
 
     CONSTRAINT chk_users_status 
-        CHECK(status IN ('ACTIVE', 'INACTIVE', 'SUSPEND'))
+        CHECK(status IN ('ACTIVE', 'INACTIVE', 'SUSPENDED'))
 ); 
 
 CREATE INDEX idx_users_email ON users(email);
@@ -280,4 +278,4 @@ CREATE INDEX idx_audit_logs_entity
     ON audit_logs(entity_type, entity_id);
 
 CREATE INDEX idx_audit_logs_created_at
-    ON audit_logs(created_at);
+    ON audit_logs(created_at); 

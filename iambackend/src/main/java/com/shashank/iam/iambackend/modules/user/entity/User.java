@@ -8,6 +8,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+import com.shashank.iam.iambackend.modules.role.entity.Role;
+
 @Entity
 @Table(name = "users")
 @Getter
