@@ -60,7 +60,7 @@ public class UserService {
 
         User user = User.builder()
                 .email(request.getEmail().trim().toLowerCase())
-                .password(passwordEncoder.encode(resolvePassword(request)))
+                .password(passwordEncoder.encode(request.getPassword()))
                 .firstName(nameParts.firstName())
                 .lastName(nameParts.lastName())
                 .employeeId(request.getEmployeeId().trim())
@@ -189,15 +189,6 @@ public class UserService {
                 : "-";
 
         return new NameParts(firstName, lastName);
-    }
-
-    private String resolvePassword(CreateUserRequest request) {
-        if (request.getPassword() == null
-                || request.getPassword().isBlank()) {
-            return "ChangeMe@123";
-        }
-
-        return request.getPassword();
     }
 
     private record NameParts(

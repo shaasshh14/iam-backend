@@ -34,6 +34,7 @@ public class CreateUserRequest {
     @NotNull
     private UserStatus status;
 
+    @NotBlank
     @Size(min = 8, max = 100)
     private String password;
 }
