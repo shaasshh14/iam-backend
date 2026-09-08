@@ -42,39 +42,82 @@ public class UserService {
 
     @Transactional
     public UserResponse createUser(CreateUserRequest request) {
-        if (userRepository.existsByEmail(request.getEmail())) {
+
+    try {
+            System.out.println(">>> CREATE USER SERVICE REACHED");
+            System.out.println(">>> EMAIL: " + request.getEmail());
+            System.out.println(">>> EMPLOYEE ID: " + request.getEmployeeId());
+            System.out.println(">>> ROLE REQUESTED: " + request.getRole());
+
+            if (userRepository.existsByEmail(request.getEmail())) {
+            System.out.println(">>> EMAIL ALREADY EXISTS");
+
             throw new ResponseStatusException(
                     HttpStatus.CONFLICT,
                     "A user with this email already exists");
-        }
+            }
 
-        if (userRepository.existsByEmployeeId(request.getEmployeeId())) {
+            if (userRepository.existsByEmployeeId(request.getEmployeeId())) {
+            System.out.println(">>> EMPLOYEE ID ALREADY EXISTS");
+
             throw new ResponseStatusException(
                     HttpStatus.CONFLICT,
                     "A user with this employee ID already exists");
-        }
+            }
 
-        Role role = resolveRole(request.getRole());
+            System.out.println(">>> PASSED DUPLICATE CHECKS");
 
-        NameParts nameParts = splitName(request.getName());
+            System.out.println(">>> BEFORE ROLE RESOLUTION");
 
-        User user = User.builder()
-                .email(request.getEmail().trim().toLowerCase())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .firstName(nameParts.firstName())
-                .lastName(nameParts.lastName())
-                .employeeId(request.getEmployeeId().trim())
-                .department(request.getDepartment().trim())
-                .status(request.getStatus())
-                .enabled(request.getStatus() == UserStatus.ACTIVE)
-                .applicationCount(0)
-                .build();
+            Role role = resolveRole(request.getRole());
 
-        user.getRoles().add(role);
+            System.out.println(">>> ROLE RESOLVED: " + role.getName());
 
-        return toResponse(userRepository.save(user));
+            System.out.println(">>> BEFORE NAME SPLIT");
+
+            NameParts nameParts = splitName(request.getName());
+
+            System.out.println(">>> NAME SPLIT: "
+                    + nameParts.firstName() + " / "
+                    + nameParts.lastName());
+
+            User user = User.builder()
+                    .email(request.getEmail().trim().toLowerCase())
+                    .password(passwordEncoder.encode(request.getPassword()))
+                    .firstName(nameParts.firstName())
+                    .lastName(nameParts.lastName())
+                    .employeeId(request.getEmployeeId().trim())
+                    .department(request.getDepartment().trim())
+                    .status(request.getStatus())
+                    .enabled(request.getStatus() == UserStatus.ACTIVE)
+                    .applicationCount(0)
+                    .build();
+
+            user.getRoles().add(role);
+
+            System.out.println(">>> BEFORE USER SAVE");
+
+            User savedUser = userRepository.save(user);
+
+            System.out.println(">>> USER SAVED: " + savedUser.getId());
+
+            UserResponse response = toResponse(savedUser);
+
+            System.out.println(">>> RESPONSE CREATED");
+
+            return response;
+
+    } catch (Exception e) {
+            System.out.println(">>> CREATE USER FAILED");
+            System.out.println(">>> EXCEPTION TYPE: " + e.getClass().getName());
+            System.out.println(">>> EXCEPTION MESSAGE: " + e.getMessage());
+
+            e.printStackTrace();
+
+            throw e;
     }
-
+    }
+    
     @Transactional
     public UserResponse updateUser(UUID id, UpdateUserRequest request) {
         User user = findUser(id);

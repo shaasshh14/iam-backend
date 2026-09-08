@@ -41,6 +41,9 @@ public class UserController {
     @PostMapping
     public ResponseEntity<UserResponse> createUser(
             @Valid @RequestBody CreateUserRequest request) {
+
+        System.out.println(">>> CREATE USER CONTROLLER REACHED");
+
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(userService.createUser(request));
@@ -50,13 +53,17 @@ public class UserController {
     public ResponseEntity<UserResponse> updateUser(
             @PathVariable UUID id,
             @Valid @RequestBody UpdateUserRequest request) {
-        return ResponseEntity.ok(userService.updateUser(id, request));
+
+        return ResponseEntity.ok(
+                userService.updateUser(id, request));
     }
 
     @PatchMapping("/{id}/status")
     public ResponseEntity<UserResponse> updateUserStatus(
             @PathVariable UUID id,
             @Valid @RequestBody UpdateUserStatusRequest request) {
-        return ResponseEntity.ok(userService.updateUserStatus(id, request));
+
+        return ResponseEntity.ok(
+                userService.updateUserStatus(id, request));
     }
 }
