@@ -4,7 +4,11 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
+
+import com.shashank.iam.iambackend.modules.role.entity.Role;
 
 @Entity
 @Table(name = "permissions")
@@ -30,6 +34,10 @@ public class Permission {
 
     @Column(nullable = false)
     private LocalDateTime updatedAt;
+
+    @ManyToMany(mappedBy = "permissions", fetch = FetchType.LAZY)
+    @Builder.Default
+    private Set<Role> roles = new HashSet<>();
 
     @PrePersist
     protected void onCreate() {
